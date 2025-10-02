@@ -1,7 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { ClientList } from "../clientList/index";
+import { ChosenClient } from "../chosenclient";
+import { ClientList } from "../clientList";
 
 dotenv.config();
 
@@ -18,8 +19,8 @@ interface memoryType {
 
 const Memory: memoryType = {}
 
-export function WhatsTeste(request:FastifyRequest, reply: FastifyReply) {    
-    const Teste = async () => {
+export function IAconfig(request:FastifyRequest, reply: FastifyReply) {    
+    const Sistem = async () => {
         const { Body, From } = request.body as { Body: string, From: string}
       
         if(!Memory[From]) {
@@ -35,58 +36,15 @@ export function WhatsTeste(request:FastifyRequest, reply: FastifyReply) {
             role: m.role,
             parts: [{ text: m.text}]
         }))
-
-        // const response = await ai.models.generateContent({
-        // model: "gemini-2.5-flash",
-        // contents: textIA,
-        // config: {
-        //     systemInstruction: `você é uma atendente da empresa Joao Moreira pintura e reparos, seu dever é receber o cliente da melhor maneira,
-        //    respondendo suas duvidas, passando valores e falando sobre nosso serviços e não faça frases muito grandes e nem muitas perguntas de uma vez.
-        //     Converse de forma natural com o cliente para coletar informações sobre:
-        //     - Nome
-        //     - Serviço de interesse
-        //     - Localização
-
-        //     IMPORTANTE: 
-        //     Sempre responda em duas partes e em json:
-        //     1. A resposta natural para o cliente.
-        //     2. Um bloco JSON chamado "dados_cliente" com os dados coletados até agora, mesmo que incompletos.]
-        //     sendo a resposta no final saindo desta forma:
-        //     {
-        //         "resposta": "...",
-        //         "dataClient": {
-        //             "nome": "...",
-        //             "serviço": "...",
-        //             "local": "...",
-        //         }
-        //     }`
-        // },
-        // });
-
-        // let dataClient;
-        // try {
-        //     const msgModel = response.candidates?.[0]?.content?.parts?.[0].text ?? "";
-            
-        //     const match = msgModel.match(/\{[\s\S]*\}/);
-        //     if(match) {
-        //         dataClient = JSON.parse(match[0]);
-        //         // Memory[From].push({
-        //         //     role: "model",
-        //         //     text: match,
-        //         // })
-        //         return reply.send(dataClient.dataClient)
-        //     }
-        // } catch(error) {
-        //     console.log(error)
-        // }
-
+        
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: textIA,
             config: {
             responseMimeType: "application/json",
             systemInstruction: `você é uma atendente da empresa joao moreira pinturas e reparos, seu dever é atender o cliente da melhor forma,
-                converse com eles da melhor forma, sem texto muito grande, poucas perguntas e ao longo da conversa, tente saber o nome dele, serviço desejado, `,
+                converse com eles da melhor forma, sem texto muito grande, poucas perguntas e ao longo da conversa, tente saber o nome dele, serviço desejado, tente sempre extrair informações como nome, 
+                serviço, tinta, local e moradia, moradia seria a casa, apartamento ou outro dipo de moradia que exista`,
             responseSchema: {
                 type: Type.ARRAY,
                 items: {
@@ -100,6 +58,7 @@ export function WhatsTeste(request:FastifyRequest, reply: FastifyReply) {
                                 service: {type: Type.STRING},
                                 tinta: {type: Type.STRING},
                                 local: {type: Type.STRING},
+                                moradia: {type: Type.STRING},
                             }
                         },
                     },
@@ -119,7 +78,7 @@ export function WhatsTeste(request:FastifyRequest, reply: FastifyReply) {
         try {
             if(response.text) {
                 const txt = JSON.parse(data);
-    
+
                 const withRole = txt.map((item:dataInterface) => ({
                     role: "model",
                     text: item.resposta
@@ -127,13 +86,13 @@ export function WhatsTeste(request:FastifyRequest, reply: FastifyReply) {
 
                 Memory[From].push(withRole[0])
                 
-                reply.send(withRole[0].text)
-                ClientList(txt[0].dataClient)
+                // reply.send(txt[0].dataClient)
+                // reply.send(withRole[0].text)
             }
         } catch( error ) {
             reply.send(error)
         }
     }
 
-    Teste();
+    Sistem();
 }

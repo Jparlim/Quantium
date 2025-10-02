@@ -1,21 +1,20 @@
 import fastify from "fastify";
 import cors from "@fastify/cors"
-import { WhatsRoute } from "./routes/whatsapp";
-
-import { WhatsTeste } from "./routes/whatsTeste";
+import { IAconfig } from "./services/IA/IAconfig";
+import { ChosenClient } from "./services/chosenclient";
 
 const App = fastify({logger:true});
 App.register(import("@fastify/formbody"))
 App.register(cors, { origin: "*"})
 
 
-App.post('/whatsapp', WhatsRoute)
+App.post('/whatsapp', IAconfig)
 
-App.post('/teste', WhatsTeste)
+App.post('/chosen', ChosenClient)
 
-App.get("/", async (request, reply) => {
-    return { status: "servidor rodando!"}
-})
+// App.get("/", async (request, reply) => {
+//     return { status: "servidor rodando!"}
+// })
 
 
 const port = Number(process.env.PORT) || 3000;
