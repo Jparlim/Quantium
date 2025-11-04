@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",                 // Versão moderna do JS
-    "module": "CommonJS",              // Usa require() no JS final
+    "module": "esnext",                 // Usa require() no JS final
     "moduleResolution": "node",        // Resolve pacotes do node
     "outDir": "dist",                  // Compila os arquivos para dist/
     "rootDir": "src",                  // Seu código-fonte fica em src/

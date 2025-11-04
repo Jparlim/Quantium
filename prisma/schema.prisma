@@ -8,7 +8,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model DataClientChosen {
-  id     String @id @default(uuid())
-  schema Json
+model Company {
+  id          Int       @id @default(autoincrement())
+  nomeEmpresa String    @unique
+  email       String    @unique
+  senha       String    @unique
+  CNPJ        Int       @unique
+  token       String    @unique
+  numero      Int       @unique
+  saldo       Int?
+  cliente     Cliente[]
+}
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  companyId Int
+  company   Company  @relation(fields: [companyId], references: [id])
+  nome      String?
+  contato   String   @unique
+  data      DateTime @default(now())
+  status    Boolean  @default(false)
 }

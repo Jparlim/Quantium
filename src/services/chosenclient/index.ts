@@ -1,28 +1,22 @@
+import { Type } from "@google/genai"
 import { FastifyReply, FastifyRequest } from "fastify"
-import prisma from "../../db"
-import { includes, string } from "zod"
+import { System } from "../config"
 
-interface ChosenInterface {
-    [nameSpace: string]: {}
-}
-
-const teste:ChosenInterface[] = []
-
-function Format(nameSpace:string, type: string | number, condition: boolean) {
-    const data:ChosenInterface = {}
-
-    if(condition) {        
-            data[nameSpace] = { type: type.toString().toUpperCase()}
-            teste.push(data)
-            return teste;
+export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
+  const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = 
+  request.body as { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }
+    
+    const data = {
+        [DataName]: {type: Type[(DataType) as keyof typeof Type]}
     }
-    return {message: "condition desabilited"}
-}
 
-export function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
-    const { nome, tipo, condition } = request.body as { nome:string, tipo: string | number, condition: boolean}
+    const text = {
+        title: TextTitle,
+        txt: Text
+    }
+    // salvar tudo no banco
 
-    const data = Format(nome, tipo, condition)
-
-    return reply.send(data)
+    reply.send("ok!")
+    return console.log(text)
+    System(Empresa, NameIA, Instruction, data)
 }
