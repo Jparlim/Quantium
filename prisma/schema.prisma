@@ -18,6 +18,7 @@ model Company {
   numero      Int       @unique
   saldo       Int?
   cliente     Cliente[]
+  IA          IA[]
 }
 
 model Cliente {
@@ -28,4 +29,14 @@ model Cliente {
   contato   String   @unique
   data      DateTime @default(now())
   status    Boolean  @default(false)
+}
+
+model IA {
+  id           Int     @id @default(autoincrement())
+  companyId    Int
+  company      Company @relation(fields: [companyId], references: [id])
+  nomeEmpresa  String?
+  nomeIA       String?
+  instructions String?
+  data         Json?
 }
