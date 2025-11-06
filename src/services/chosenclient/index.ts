@@ -4,8 +4,9 @@ import { System } from "../config"
 import prisma from "../../db"
 
 export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
-  const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = request.body as { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }
-  const { companyId } = request.?user;
+    const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = request.body as { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }
+    const { companyId } = request.body as { companyId:number }
+  //   const { companyId } = request.?user;
 //   vai chegar do JWT o id da empresa no banco
     
     const data = {
@@ -21,7 +22,9 @@ export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
     
     await prisma.iA.create({
         data: {
-            company: companyId,
+            company: {
+                connect: {id: companyId}
+            },
             nomeEmpresa: Empresa,
             nomeIA: NameIA,
             instructions: Instruction,

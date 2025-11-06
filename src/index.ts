@@ -1,6 +1,6 @@
 import fastify from "fastify";
 import cors from "@fastify/cors"
-import { IAconfig } from "./services/Whatsapp";
+import { whatsapp } from "./services/Whatsapp";
 import { ChosenClient } from "./services/chosenclient";
 import { CriaConta } from "./pages/createConta";
 
@@ -9,7 +9,7 @@ App.register(import("@fastify/formbody"))
 App.register(cors, { origin: "*"})
 
 
-App.post('/whatsapp', IAconfig)
+App.post('/whatsapp', whatsapp)
 
 App.post('/chosen', ChosenClient)
 
