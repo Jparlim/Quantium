@@ -13,9 +13,9 @@ model Company {
   nomeEmpresa String    @unique
   email       String    @unique
   senha       String    @unique
-  CNPJ        Int       @unique
+  CNPJ        String    @unique
   token       String    @unique
-  numero      Int       @unique
+  numero      String    @unique
   saldo       Int?
   cliente     Cliente[]
   IA          IA[]

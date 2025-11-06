@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../db";
 
 export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
-    const { nome, email, senha, CNPJ, token, numero } = request.body as { nome:string, email: string, senha: string, CNPJ: number, token: string, numero: number }
+    const { nome, email, senha, CNPJ, token, numero } = request.body as { nome:string, email: string, senha: string, CNPJ: string, token: string, numero: string }
 
     await prisma.company.create({
         data: {
@@ -14,4 +14,6 @@ export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
             numero: numero
         }
     })
+
+    return reply.send("conta criada com sucesso!")
 }

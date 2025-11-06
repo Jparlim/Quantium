@@ -55,6 +55,7 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
 
         await redis.rpush(clientNumber, JSON.stringify(resposta.text))
 
+        return resposta;
     } catch(error) {
         console.log(error)
     }
