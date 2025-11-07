@@ -57,6 +57,10 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
         }
     })
 
+    if(!Idcompany) {
+        return reply.status(404).send("empresa não encontrada no banco!")
+    }
+
     const exists = await prisma.cliente.findUnique({
         where: {
             contato: clientNumber
@@ -74,7 +78,7 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
         })
     }
 
-    const resposta = await System(Idcompany?.id!, clientNumber, messgaeClient)
+    // const resposta = await System(Idcompany?.id!, clientNumber, messgaeClient)
 
-    reply.send(JSON.parse(resposta?.text as string)[0].resposta)
+    // reply.send(JSON.parse(resposta?.text as string)[0].resposta)
 }

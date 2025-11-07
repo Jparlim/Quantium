@@ -13,16 +13,17 @@ const redis = new Redis({
 const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
 
 export async function System(idEmpresa:number, clientNumber:string, messageClient:string) {
-
     const userMessage = {
         role: "user",
-        parts: [{messageClient}]
+        parts: [messageClient]
     }
 
     try {
-
         await redis.rpush(clientNumber, JSON.stringify(userMessage))
-        await redis.expire(clientNumber, 3600 * 6)
+        await redis.expire(clientNumber, 3600 * 1)
+
+        console.log("inserindo a mensagem do cliente")
+        console.log(await redis.lrange(clientNumber, 0,-1))
 
         const datas = await prisma.iA.findMany({
             where: {

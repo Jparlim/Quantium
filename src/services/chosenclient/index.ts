@@ -1,6 +1,4 @@
-import { Type } from "@google/genai"
 import { FastifyReply, FastifyRequest } from "fastify"
-import { System } from "../config"
 import prisma from "../../db"
 
 export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {

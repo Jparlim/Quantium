@@ -18,18 +18,56 @@ App.post('/create', CriaConta)
 
 
 App.get('/companys/data', async (request, response) => {
+  const { id } = request.params as { id:number }
+
+  if(id) {
+    const data = await prisma.company.findUnique({
+      where: {
+        id: id
+      }
+    })
+    return response.send(data)
+  }
+
   const data = await prisma.company.findMany()
-  response.send(data)
+  return response.send(data)
 })
 
-App.get('/chosens/data', async (request, response) => {
+App.get('/chosens/data/:id', async (request, response) => {
+  const { id } = request.params as { id:number }
+
+  if(id) {
+    const data = await prisma.iA.findUnique({
+      where: {
+        id: id
+      }
+    })
+    return response.send(data)
+  }
+
   const data = await prisma.iA.findMany()
   return response.send(data)
 })
 
-// App.get("/", async (request, reply) => {
-//     return { status: "servidor rodando!"}
-// })
+App.get("/clients", async (request, response) => {
+ const { id } = request.params as { id:number }
+
+  if(id) {
+    const data = await prisma.cliente.findUnique({
+      where: {
+        id: id
+      }
+    })
+    return response.send(data)
+  }
+
+  const data = await prisma.cliente.findMany()
+  return response.send(data)
+})
+
+App.get("/", async (request, reply) => {
+    return { status: "servidor rodando!"}
+})
 
 
 const port = Number(process.env.PORT) || 3000;
