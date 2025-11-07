@@ -2,7 +2,7 @@ import fastify from "fastify";
 import cors from "@fastify/cors"
 import { whatsapp } from "./services/Whatsapp";
 import { ChosenClient } from "./services/chosenclient";
-import { CriaConta } from "./pages/createConta";
+import { CriaConta } from "./loginANDcreate/createConta";
 import prisma from "./db";
 
 const App = fastify({logger:true});
