@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Company {
@@ -16,7 +15,7 @@ model Company {
   CNPJ        String    @unique
   token       String    @unique
   numero      String    @unique
-  saldo       Int?
+  saldo       Int?      @default(0)
   cliente     Cliente[]
   IA          IA[]
 }
