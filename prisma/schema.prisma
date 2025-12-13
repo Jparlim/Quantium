@@ -13,8 +13,8 @@ model Company {
   email       String    @unique
   senha       String    @unique
   CNPJ        String    @unique
-  token       String    @unique
   numero      String    @unique
+  status      Boolean   @default(false)
   saldo       Int?      @default(0)
   cliente     Cliente[]
   IA          IA[]
