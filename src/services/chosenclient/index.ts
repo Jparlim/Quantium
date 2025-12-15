@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify"
-import prisma from "../../db"
+import prisma from "../../Prisma_Client"
 
 export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
     const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = request.body as { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }

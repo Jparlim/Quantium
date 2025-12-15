@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -18,6 +17,18 @@ model Company {
   saldo       Int?      @default(0)
   cliente     Cliente[]
   IA          IA[]
+}
+
+model Company_Pending {
+  id            Int      @id @default(autoincrement())
+  nome          String   @unique
+  email         String   @unique
+  senha         String   @unique
+  CNPJ          String   @unique
+  numero        String   @unique
+  token         String
+  token_expires DateTime
+  created_at    DateTime @default(now())
 }
 
 model Cliente {

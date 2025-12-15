@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import prisma from "../../db";
+import {prisma} from "../../Prisma_Client";
 import { System } from "../config";
 
 export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {    

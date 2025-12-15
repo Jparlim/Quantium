@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import prisma from "../../db";
+import {prisma} from "../../Prisma_Client";
 import jwt from "@fastify/jwt"
 
 export async function Login(App: FastifyInstance,request:FastifyRequest, reply:FastifyReply) {
