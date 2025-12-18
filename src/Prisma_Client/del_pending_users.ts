@@ -1,0 +1,11 @@
+import { prisma } from ".";
+
+export async function DelPending() {
+    await prisma.company_Pending.deleteMany({
+        where: {
+            token_expires: {
+                lt: new Date()
+            }
+        }
+    })
+}

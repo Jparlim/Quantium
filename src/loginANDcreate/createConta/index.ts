@@ -2,6 +2,7 @@ import crypto from "crypto"
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../../Prisma_Client";
 import dotenv from "dotenv"
+import { jwt } from "zod";
 dotenv.config()
 
 export async function CriaConta(App:FastifyInstance, request:FastifyRequest, reply:FastifyReply) {
@@ -10,7 +11,7 @@ export async function CriaConta(App:FastifyInstance, request:FastifyRequest, rep
     // usar a AWS SES e configurar
     const tokenSend = crypto.randomInt(100000, 1000000).toString()
 
-    await prisma.company_Pending.create({
+    const Id_pending = await prisma.company_Pending.create({
         data: {
             nome: nome,
             email: email,
@@ -24,5 +25,9 @@ export async function CriaConta(App:FastifyInstance, request:FastifyRequest, rep
                  + 15 * 60 * 1000
             )
         }
+    })
+
+    return reply.send({
+        data: Id_pending.id   
     })
 }

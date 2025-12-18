@@ -8,6 +8,9 @@ import { Login } from "./loginANDcreate/loginConta";
 import jwt from "@fastify/jwt";
 import { Token } from "./loginANDcreate/token";
 
+import cron from "node-cron"
+import { DelPending } from "./Prisma_Client/del_pending_users";
+
 const App = fastify({logger:true});
 App.register(import("@fastify/formbody"))
 App.register(cors, { origin: "*"})
@@ -28,54 +31,9 @@ App.post('/create/token', Token)
 
 // ===================================================================================
 
-App.get('/companys/data', async (request, response) => {
-  const { id } = request.params as { id:number }
-
-  if(id) {
-    const data = await prisma.company.findUnique({
-      where: {
-        id: id
-      }
-    })
-    return response.send(data)
-  }
-
-  const data = await prisma.company.findMany()
-  return response.send(data)
+cron.schedule("*/15 * * * *", async () => {
+  await DelPending()
 })
-
-App.get('/chosens/data', async (request, response) => {
-  const { id } = request.params as { id:number }
-
-  if(id) {
-    const data = await prisma.iA.findUnique({
-      where: {
-        id: id
-      }
-    })
-    return response.send(data)
-  }
-
-  const data = await prisma.iA.findMany()
-  return response.send(data)
-})
-
-App.get("/clients", async (request, response) => {
- const { id } = request.params as { id:number }
-
-  if(id) {
-    const data = await prisma.cliente.findUnique({
-      where: {
-        id: id
-      }
-    })
-    return response.send(data)
-  }
-
-  const data = await prisma.cliente.findMany()
-  return response.send(data)
-})
-
 
 const port = Number(process.env.PORT) || 3000;
 
