@@ -3,37 +3,41 @@ import { prisma } from "../../Prisma_Client";
 import crypto from "crypto"
 
 export async function Token(request:FastifyRequest, reply:FastifyReply) {
-    const { token } = request.body as { token:string }
+    const { token, idPending } = request.body as { token:Array<string>, idPending:number }
 
-    const verify = await prisma.company_Pending.findFirst({
-        where: {
-            token: token
-        }
-    })
+    console.log('cheguei aqui')
+    console.log(token, idPending)
 
-    if(verify?.created_at! < verify?.token_expires!) {
-        return reply.send({
-            message: "token expirou! tente novamente"
-        })
-    }
+    // const verify = await prisma.company_Pending.findFirst({
+    //     where: {
+    //         id: Number(idPending),
+    //         token: token
+    //     }
+    // })
 
-    if(token != verify?.token){
-        reply.send({
-            message: "token inválido! outro token será enviado para seu email!"
-        })
+    // if(verify?.created_at! < verify?.token_expires!) {
+    //     return reply.send({
+    //         message: "token expirou! tente novamente"
+    //     })
+    // }
+
+    // if(token != verify?.token){
+    //     reply.send({
+    //         message: "token inválido! outro token será enviado para seu email!"
+    //     })
         
-        const tokenSend = crypto.randomInt(100000, 1000000).toString()
-        return reply.send(tokenSend)
-    }
+    //     const tokenSend = crypto.randomInt(100000, 1000000).toString()
+    //     return reply.send(tokenSend)
+    // }
     
-    await prisma.company.create({
-        data: {
-            nomeEmpresa: verify?.nome!,
-            email: verify?.email!,
-            senha: verify?.senha!,
-            CNPJ: verify?.CNPJ!,
-            numero: verify?.numero!,
-            status: true
-        }
-    })
+    // await prisma.company.create({
+    //     data: {
+    //         nomeEmpresa: verify?.nome!,
+    //         email: verify?.email!,
+    //         senha: verify?.senha!,
+    //         CNPJ: verify?.CNPJ!,
+    //         numero: verify?.numero!,
+    //         status: true
+    //     }
+    // })
 }

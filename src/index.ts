@@ -23,7 +23,7 @@ App.post('/whatsapp', whatsapp)
 
 App.post('/chosen', ChosenClient)
 
-App.post('/create', ( request, reply ) => CriaConta(App, request, reply))
+App.post('/create', CriaConta)
 
 App.post('/login', (request, reply) => Login(App, request, reply))
 

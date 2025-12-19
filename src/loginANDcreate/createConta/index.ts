@@ -5,7 +5,7 @@ import dotenv from "dotenv"
 import { jwt } from "zod";
 dotenv.config()
 
-export async function CriaConta(App:FastifyInstance, request:FastifyRequest, reply:FastifyReply) {
+export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
     const { nome, email, senha, CNPJ, numero } = request.body as { nome:string, email: string, senha: string, CNPJ: string, numero: string }
 
     // usar a AWS SES e configurar
@@ -28,6 +28,7 @@ export async function CriaConta(App:FastifyInstance, request:FastifyRequest, rep
     })
 
     return reply.send({
-        data: Id_pending.id   
+        id: Id_pending.id,
+        token: tokenSend
     })
 }
