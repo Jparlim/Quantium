@@ -25,7 +25,7 @@ App.post('/chosen', ChosenClient)
 
 App.post('/create', CriaConta)
 
-App.post('/login', (request, reply) => Login(App, request, reply))
+App.post('/login', Login)
 
 App.post('/create/token', Token)
 

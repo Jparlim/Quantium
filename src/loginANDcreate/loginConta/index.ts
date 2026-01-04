@@ -1,22 +1,21 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../../Prisma_Client";
-import jwt from "@fastify/jwt"
 
-export async function Login(App: FastifyInstance,request:FastifyRequest, reply:FastifyReply) {
+export async function Login(request:FastifyRequest, reply:FastifyReply) {
     const { email, senha } = request.body as { email:string, senha:string }
 
     const data = await prisma.company.findUnique({
         where: {
             email: email,
-            AND: {
-                senha: senha
-            }
+            senha: senha
         }
     })
 
     if(!data) {
-        return reply.send("Email ou Senha inválida!")
+        console.log('teste de dados erraDOS')
+        return reply.status(400).send({message: "No account was found with that data"})
     }
 
-    App.jwt.sign(data.id.toString())
+    console.log('account was found! wellcome to back')
+    return reply.status(200).send('account was found! wellcome to back')
 }

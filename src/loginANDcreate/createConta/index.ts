@@ -2,7 +2,6 @@ import crypto from "crypto"
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../../Prisma_Client";
 import dotenv from "dotenv"
-import { jwt } from "zod";
 dotenv.config()
 
 export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
