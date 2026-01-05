@@ -2,11 +2,11 @@ import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import cors from "@fastify/cors"
 import { whatsapp } from "./services/Whatsapp";
 import { ChosenClient } from "./services/chosenclient";
-import { CriaConta } from "./loginANDcreate/createConta";
+import { CriaConta } from "./initPages/createConta";
 import {prisma} from "./Prisma_Client";
-import { Login } from "./loginANDcreate/loginConta";
+import { Login } from "./initPages/loginConta";
 import jwt from "@fastify/jwt";
-import { Token } from "./loginANDcreate/token";
+import { Token } from "./initPages/token";
 
 import cron from "node-cron"
 import { DelPending } from "./Prisma_Client/del_pending_users";
