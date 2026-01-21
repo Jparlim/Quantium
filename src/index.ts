@@ -3,10 +3,10 @@ import cors from "@fastify/cors"
 import { whatsapp } from "./services/Whatsapp";
 import { ChosenClient } from "./services/chosenclient";
 import { CriaConta } from "./initPages/createConta";
-import {prisma} from "./Prisma_Client";
 import { Login } from "./initPages/loginConta";
 import jwt from "@fastify/jwt";
 import { Token } from "./initPages/token";
+import { DeleteVisits } from "./services/deletVisits";
 
 import cron from "node-cron"
 import { DelPending } from "./Prisma_Client/del_pending_users";
@@ -28,6 +28,8 @@ App.post('/create', CriaConta)
 App.post('/login', Login)
 
 App.post('/create/token', Token)
+
+App.delete(`/visits/delete/:id`, DeleteVisits)
 
 // ===================================================================================
 

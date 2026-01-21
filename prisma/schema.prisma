@@ -39,6 +39,7 @@ model Cliente {
   contato   String   @unique
   data      DateTime @default(now())
   status    Boolean  @default(false)
+  visits    Visits[]
 }
 
 model IA {
@@ -49,4 +50,17 @@ model IA {
   nomeIA       String?
   instructions String?
   data         Json?
+}
+
+model Visits {
+  id          Int      @id @default(autoincrement())
+  clientId    Int
+  client      Cliente  @relation(fields: [clientId], references: [id])
+  nome        String
+  endereco    String
+  observacao  String
+  responsavel String
+  data        DateTime
+  hora        String
+  status      Boolean  @default(false)
 }
