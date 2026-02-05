@@ -10,6 +10,8 @@ import { DeleteVisits } from "./services/deletVisits";
 
 import cron from "node-cron"
 import { DelPending } from "./Prisma_Client/del_pending_users";
+import { GetVisits } from "./services/getVisits";
+import { CreateVisits } from "./services/createVisits";
 
 const App = fastify({logger:true});
 App.register(import("@fastify/formbody"))
@@ -30,6 +32,11 @@ App.post('/login', Login)
 App.post('/create/token', Token)
 
 App.delete(`/visits/delete/:id`, DeleteVisits)
+
+App.get(`/visits/get/:date`, GetVisits)
+
+App.post(`/visits/create`, CreateVisits)
+
 
 // ===================================================================================
 
