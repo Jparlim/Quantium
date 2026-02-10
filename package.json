@@ -8,7 +8,7 @@
     "banco": "npx tsx src/db/index.ts",
     "estudio": "npx prisma studio",
     "dev": "tsx watch --env-file .env src/index.ts",
-    "seed": "node prisma/seed/index.ts"
+    "seed": "node ./prisma/seed/index.ts"
   },
   "keywords": [],
   "author": "",
