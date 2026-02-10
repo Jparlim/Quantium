@@ -10,31 +10,20 @@ export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
     // usar a AWS SES e configurar
     const tokenSend = crypto.randomInt(100000, 1000000).toString()
 
-    const verify = await prisma.company.findUnique({
+    const verify = await prisma.company.findFirst({
         where: {
-            nomeEmpresa: nome,
-            email: email,
-            senha: senha,
-            CNPJ: CNPJ,
-            numero: numero
+            OR: [
+                {nomeEmpresa: nome},
+                {email: email},
+                {CNPJ: CNPJ},
+                {numero: numero}
+            ]
         }
     })
 
     if(verify) {
         return reply.status(400).send({
             message: 'empresa já cadastrada!'
-        })
-    }
-
-    if(CNPJ === verify!.CNPJ) {
-        return reply.status(400).send({
-            message: 'CNPJ já está em uso no sistema!'
-        })
-    }
-
-    if(email && senha === verify!.email && verify!.senha) {
-        return reply.status(400).send({
-            message: 'CNPJ já está em uso no sistema!'
         })
     }
 
