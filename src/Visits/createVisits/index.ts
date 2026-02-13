@@ -2,7 +2,8 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../Prisma_Client";
 
 export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
-    const { nome, 
+    const { nome,
+        numero,
         endereco, 
         observacao, 
         responsavel, 
@@ -11,7 +12,8 @@ export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
         status,
         clientId,
     } = request.body as { 
-        nome: string, 
+        nome: string,
+        numero: string,
         endereco: string, 
         observacao: string, 
         responsavel: string, 
@@ -26,6 +28,7 @@ export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
     await prisma.visits.create({
         data: {
             nome: nome,
+            contato: numero,
             endereco: endereco, 
             observacao: observacao,
             responsavel: responsavel,

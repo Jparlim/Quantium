@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
-import prisma from "../../Prisma_Client";
 import Redis from "ioredis";
+import { prisma } from "../../Prisma_Client";
 dotenv.config();
 
 const redis = new Redis({

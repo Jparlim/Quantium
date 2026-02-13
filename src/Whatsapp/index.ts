@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import {prisma} from "../../Prisma_Client";
-import { System } from "../config";
+import {prisma} from "../Prisma_Client";
+import { System } from "../PromptIA/config";
 
 export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {    
     // const { entry } = request.body as { entry:Array<object>}

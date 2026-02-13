@@ -58,7 +58,6 @@ model Visits {
   client      Cliente  @relation(fields: [clientId], references: [id])
   nome        String
   contato     String
-  contatoRef  Cliente  @relation(fields: [contato], references: [contato])
   endereco    String
   observacao  String
   responsavel String

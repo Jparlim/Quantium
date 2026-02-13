@@ -1,17 +1,17 @@
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import cors from "@fastify/cors"
-import { whatsapp } from "./services/Whatsapp";
-import { ChosenClient } from "./services/chosenclient";
-import { CriaConta } from "./initPages/createConta";
-import { Login } from "./initPages/loginConta";
+import { whatsapp } from "./Whatsapp";
+import { ChosenClient } from "./PromptIA/ConfigIA";
+import { CriaConta } from "./Create_and_Login/createConta";
+import { Login } from "./Create_and_Login/loginConta";
 import jwt from "@fastify/jwt";
-import { Token } from "./initPages/token";
-import { DeleteVisits } from "./services/deletVisits";
-
+import { Token } from "./Create_and_Login/token";
+import { DeleteVisits } from "./Visits/deletVisits";
 import cron from "node-cron"
 import { DelPending } from "./Prisma_Client/del_pending_users";
-import { GetVisits } from "./services/getVisits";
-import { CreateVisits } from "./services/createVisits";
+import { GetVisits } from "./Visits/getVisits";
+import { CreateVisits } from "./Visits/createVisits";
+import { Visits_Client_id } from "./Visits/visits_client_id";
 
 const App = fastify({logger:true});
 App.register(import("@fastify/formbody"))
@@ -25,18 +25,27 @@ App.post('/whatsapp', whatsapp)
 
 App.post('/chosen', ChosenClient)
 
+// login and create count
+
 App.post('/create', CriaConta)
 
 App.post('/login', Login)
 
 App.post('/create/token', Token)
 
+// visits
+
 App.delete(`/visits/delete/:id`, DeleteVisits)
 
 App.get(`/visits/get/:date`, GetVisits)
 
+App.get("/visits/get_client_id", Visits_Client_id)
+
 App.post(`/visits/create`, CreateVisits)
 
+// clients
+
+App.post(`/client/create`, )
 
 // ===================================================================================
 
