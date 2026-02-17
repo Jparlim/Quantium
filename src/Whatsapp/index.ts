@@ -49,6 +49,8 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
 //   ]
 // }
 
+// este código acima é um exemploq de como vou receber a estrutura de dados quando eu implementar o Whatsapp meta
+
     const {empresaNumber, clientNumber, messgaeClient } = request.body as { empresaNumber: string, clientNumber: string, messgaeClient: string};
 
     const Idcompany = await prisma.company.findUnique({
@@ -60,6 +62,8 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
     if(!Idcompany) {
         return reply.status(404).send("empresa não encontrada no banco!")
     }
+
+    const resposta = await System(Idcompany?.id!, clientNumber, messgaeClient)
 
     const exists = await prisma.cliente.findUnique({
         where: {
@@ -78,7 +82,5 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
         })
     }
 
-    // const resposta = await System(Idcompany?.id!, clientNumber, messgaeClient)
-
-    // reply.send(JSON.parse(resposta?.text as string)[0].resposta)
+    reply.send(JSON.parse(resposta?.text as string)[0].resposta)
 }

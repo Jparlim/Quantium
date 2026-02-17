@@ -45,7 +45,7 @@ App.post(`/visits/create`, CreateVisits)
 
 // clients
 
-App.post(`/client/create`, )
+// App.post(`/client/create`, )
 
 // ===================================================================================
 

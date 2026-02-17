@@ -1,4 +1,4 @@
-import { prisma } from ".";
+import { prisma } from "./index";
 
 export async function DelPending() {
     await prisma.company_Pending.deleteMany({

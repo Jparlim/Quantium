@@ -41,7 +41,7 @@ export async function Token(request:FastifyRequest, reply:FastifyReply) {
         })
     }
     
-    await prisma.company.create({
+    const IdCount = await prisma.company.create({
         data: {
             nomeEmpresa: verify?.nome!,
             email: verify?.email!,
