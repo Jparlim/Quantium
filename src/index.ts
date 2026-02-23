@@ -12,14 +12,35 @@ import { DelPending } from "./Prisma_Client/del_pending_users";
 import { GetVisits } from "./Visits/getVisits";
 import { CreateVisits } from "./Visits/createVisits";
 import { Visits_Client_id } from "./Visits/visits_client_id";
+import cookie from "@fastify/cookie"
+
 
 const App = fastify({logger:true});
 App.register(import("@fastify/formbody"))
 App.register(cors, { origin: "*"})
 
 App.register(jwt, {
-  secret: "LoboPidao"
+  secret: process.env.JWT_SECRET as string
 })
+
+App.register(cookie, {
+  secret: process.env.COOKIE_SECRET as string
+})
+
+App.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
+    try {
+      await request.jwtVerify()
+    } catch (err) {
+      reply.send(err)
+    }
+  }
+)
+
+// preciso colocar este preHandler em endpoints importantes, como login, cadastro, criar produto, salvar dados, listar empresa por exemplo.
+
+// App.get('/whatsapp', {preHandler: [App.authenticate]}, whatsapp)
+
+
 
 App.post('/whatsapp', whatsapp)
 
@@ -29,9 +50,9 @@ App.post('/chosen', ChosenClient)
 
 App.post('/create', CriaConta)
 
-App.post('/login', Login)
+App.post('/login', (request:FastifyRequest, reply: FastifyReply) => Login(request, reply, App))
 
-App.post('/create/token', Token)
+App.post('/create/token', (request: FastifyRequest, reply: FastifyReply) => Token(request, reply, App))
 
 // visits
 

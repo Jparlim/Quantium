@@ -2,7 +2,7 @@ import crypto from "crypto"
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../../Prisma_Client";
 import dotenv from "dotenv"
-dotenv.config()
+dotenv.config();
 
 export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
     const { nome, email, senha, CNPJ, numero } = request.body as { nome:string, email: string, senha: string, CNPJ: string, numero: string }

@@ -1,8 +1,11 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../Prisma_Client";
 import crypto from "crypto"
+import bcrypt from "bcryptjs";
+import fastifyJwt from "@fastify/jwt";
+import { success } from "zod";
 
-export async function Token(request:FastifyRequest, reply:FastifyReply) {
+export async function Token(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
     const { token, idPending } = request.body as { token:string, idPending:number }
 
     const verify = await prisma.company_Pending.findUnique({
@@ -52,11 +55,23 @@ export async function Token(request:FastifyRequest, reply:FastifyReply) {
         }
     })
 
+    // salvar o id da conta da empresa no 
+
     await prisma.company_Pending.delete({
         where: {
             id: verify.id
         }
     })
 
-    return reply.status(201).send("empresa criada na tabela company!")
+    const tokenJwt = App.jwt.sign({
+        IDcompany: IdCount.id
+    })
+
+    return reply.setCookie("token", tokenJwt, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: '/',
+        maxAge: 60 * 15
+    }).send({ success: true })
 }

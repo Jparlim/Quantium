@@ -2,10 +2,15 @@ import { FastifyReply, FastifyRequest } from "fastify"
 import { prisma } from "../../Prisma_Client";
 
 export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
-    const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = request.body as { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }
+    const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = 
+    request.body as 
+    { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }
+
     try {
-        await request.jwtVerify()
+        await request.jwtVerify();
         const { companyId } = request.user as { companyId:number};
+
+        // aqui pego o id da empresa que esta no navegador, await request.jwtVerify() decodifica o token quando o usuario entra nesta página, e fornece o valor dentro do token
 
         const data = {
             ["nomeClient"]: {type: "STRING"},
