@@ -25,7 +25,7 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
         console.log("inserindo a mensagem do cliente")
         console.log(await redis.lrange(clientNumber, 0,-1))
 
-        const datas = await prisma.iA.findMany({
+        const datas = await prisma.iA.findUnique({
             where: {
                 id: idEmpresa
             }
@@ -36,7 +36,7 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
             contents: await redis.lrange(clientNumber, 0,-1),
             config: {
             responseMimeType: "application/json",
-            systemInstruction: `você é uma atendente da empresa ${datas[0].nomeEmpresa} e seu nome é ${datas[0].nomeIA}, ${datas[0].instructions}`,
+            systemInstruction: `você é uma atendente da empresa ${datas?.nomeEmpresa} e seu nome é ${datas?.nomeIA}, ${datas?.instructions}`,
             responseSchema: {
                 type: Type.ARRAY,
                 items: {
@@ -45,7 +45,7 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
                         resposta: {type: Type.STRING},
                         dataClient: {
                             type: Type.OBJECT,
-                            properties: datas[0].data
+                            properties: datas?.data
                         },
                     },
                     propertyOrdering: ["resposta", "dataClient"],

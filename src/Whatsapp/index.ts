@@ -53,6 +53,18 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
 
     const {empresaNumber, clientNumber, messgaeClient } = request.body as { empresaNumber: string, clientNumber: string, messgaeClient: string};
 
+    // await request.jwtVerify();
+    // const { IDcompany } = request.user as { IDcompany: number } 
+
+    // const Idcompany = await prisma.company.findUnique({
+    //     where: {
+    //         numero: empresaNumber, 
+    //         AND: {
+    //             id: IDcompany
+    //         }
+    //     }
+    // })
+
     const Idcompany = await prisma.company.findUnique({
         where: {
             numero: empresaNumber
@@ -71,7 +83,7 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
         }
     })
 
-    if(!exists) {
+    if(!exists && resposta?.data) {
         await prisma.cliente.create({
             data: {
                 contato: clientNumber,

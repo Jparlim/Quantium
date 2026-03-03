@@ -1,9 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../Prisma_Client";
 import crypto from "crypto"
-import bcrypt from "bcryptjs";
-import fastifyJwt from "@fastify/jwt";
-import { success } from "zod";
 
 export async function Token(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
     const { token, idPending } = request.body as { token:string, idPending:number }
@@ -66,6 +63,8 @@ export async function Token(request:FastifyRequest, reply:FastifyReply, App:Fast
     const tokenJwt = App.jwt.sign({
         IDcompany: IdCount.id
     })
+
+    console.log(token);
 
     return reply.setCookie("token", tokenJwt, {
         httpOnly: true,
