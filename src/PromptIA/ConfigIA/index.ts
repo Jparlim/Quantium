@@ -8,9 +8,9 @@ export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
 
     try {
         await request.jwtVerify();
-        const { companyId } = request.user as { companyId:number};
+        const { IDcompany } = request.user as { IDcompany:number };
 
-        // aqui pego o id da empresa que esta no navegador, await request.jwtVerify() decodifica o token quando o usuario entra nesta página, e fornece o valor dentro do token
+        // aqui pego o id da empresa que esta no navegador, await request.jwtVerify() decodifica o token quando o usuario entra nesta página, e fornece o valor dentro do token;
 
         const data = {
             ["nomeClient"]: {type: "STRING"},
@@ -27,7 +27,7 @@ export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
         await prisma.iA.create({
             data: {
                 company: {
-                    connect: {id: companyId}
+                    connect: {id: IDcompany}
                 },
                 nomeEmpresa: Empresa,
                 nomeIA: NameIA,
@@ -36,7 +36,7 @@ export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
             }
         })
 
-        return reply.send("configurações criadas com sucesso!")
+        return reply.status(200).send("configurações criadas com sucesso!")
     } catch(error) {
         return reply.send(error)
     }

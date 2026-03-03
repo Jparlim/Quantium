@@ -64,7 +64,7 @@ export async function Token(request:FastifyRequest, reply:FastifyReply, App:Fast
         IDcompany: IdCount.id
     })
 
-    console.log(token);
+    console.log(tokenJwt);
 
     return reply.setCookie("token", tokenJwt, {
         httpOnly: true,

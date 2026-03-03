@@ -53,21 +53,13 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
 
     const {empresaNumber, clientNumber, messgaeClient } = request.body as { empresaNumber: string, clientNumber: string, messgaeClient: string};
 
-    // await request.jwtVerify();
-    // const { IDcompany } = request.user as { IDcompany: number } 
+    // formato do numero: 5543984623351, ou seja, código do país + DDD + número do cliente, sem espaços ou caracteres especiais
 
-    // const Idcompany = await prisma.company.findUnique({
-    //     where: {
-    //         numero: empresaNumber, 
-    //         AND: {
-    //             id: IDcompany
-    //         }
-    //     }
-    // })
+    const formatedEmpresaNumber = empresaNumber.replace(/\D/g, '');
 
     const Idcompany = await prisma.company.findUnique({
         where: {
-            numero: empresaNumber
+            numero: formatedEmpresaNumber
         }
     })
 
@@ -83,7 +75,7 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
         }
     })
 
-    if(!exists && resposta?.data) {
+    if(exists && resposta?.data) {
         await prisma.cliente.create({
             data: {
                 contato: clientNumber,

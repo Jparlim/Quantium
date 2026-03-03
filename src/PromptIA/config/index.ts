@@ -22,14 +22,15 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
         await redis.rpush(clientNumber, JSON.stringify(userMessage))
         await redis.expire(clientNumber, 3600 * 1)
 
-        console.log("inserindo a mensagem do cliente")
-        console.log(await redis.lrange(clientNumber, 0,-1))
-
         const datas = await prisma.iA.findUnique({
             where: {
                 id: idEmpresa
             }
         })
+
+        if(!datas) {
+            console.log("configuração de IA não foi encontrada para esta empresa! a IA continuará sem configurações personalizadas.");
+        }
     
         const resposta = await ai.models.generateContent({
             model: "gemini-2.5-flash",
