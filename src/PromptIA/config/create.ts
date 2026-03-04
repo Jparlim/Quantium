@@ -37,7 +37,7 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
             contents: await redis.lrange(clientNumber, 0,-1),
             config: {
             responseMimeType: "application/json",
-            systemInstruction: `você é uma atendente da empresa ${datas?.nomeEmpresa} e seu nome é ${datas?.nomeIA}, ${datas?.instructions}`,
+            systemInstruction: `você é uma atendente da empresa ${datas?.nomeEmpresa} e seu nome é ${datas?.nomeIA}, ${datas?.instructions}. ${datas?.data} você precisa extrair estes dados do cliente, e retornar em formato JSON, seguindo a estrutura definida no schema. caso o cliente não forneça os dados necessários, retorne apenas a resposta para o cliente, sem o campo dataClient.`,
             responseSchema: {
                 type: Type.ARRAY,
                 items: {
@@ -55,7 +55,9 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
             },
         })
 
-        await redis.rpush(clientNumber, JSON.stringify(resposta.text))
+        console.log(JSON.parse(resposta.text as string)[0].dataClient);
+
+        await redis.rpush(clientNumber, JSON.stringify(resposta.text));
 
         return resposta;
     } catch(error) {

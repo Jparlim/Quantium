@@ -13,6 +13,7 @@ import { GetVisits } from "./Visits/getVisits";
 import { CreateVisits } from "./Visits/createVisits";
 import { Visits_Client_id } from "./Visits/visits_client_id";
 import cookie from "@fastify/cookie"
+import { UpdateConfigIA } from "./PromptIA/config/update";
 
 
 const App = fastify({logger:true});
@@ -44,7 +45,9 @@ App.decorate("authenticate", async function (request: FastifyRequest, reply: Fas
 
 App.post('/whatsapp', whatsapp)
 
-App.post('/chosen', ChosenClient)
+App.post('/config', ChosenClient)
+
+App.put('/config/update', UpdateConfigIA)
 
 // login and create count
 

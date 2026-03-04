@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../Prisma_Client";
-import { System } from "../PromptIA/config";
+import { System } from "../PromptIA/config/create";
 
 export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {    
     // const { entry } = request.body as { entry:Array<object>}
@@ -75,7 +75,7 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
         }
     })
 
-    if(exists && resposta?.data) {
+    if(!exists && resposta?.data) {
         await prisma.cliente.create({
             data: {
                 contato: clientNumber,
