@@ -14,6 +14,8 @@ import { CreateVisits } from "./Visits/createVisits";
 import { Visits_Client_id } from "./Visits/visits_client_id";
 import cookie from "@fastify/cookie"
 import { UpdateConfigIA } from "./PromptIA/config/update";
+import { ref } from "process";
+import { success } from "zod";
 
 
 const App = fastify({logger:true});
@@ -24,9 +26,36 @@ App.register(jwt, {
   secret: process.env.JWT_SECRET as string
 })
 
+App.register(jwt, {
+  secret: process.env.JWT_REFRESH_SECRET as string
+})
+
 App.register(cookie, {
   secret: process.env.COOKIE_SECRET as string
 })
+
+App.post("/refresh", async (request: FastifyRequest, reply: FastifyReply) => {
+  try {
+    const { refreshToken } = request.cookies;
+
+    const decoded = App.jwt.verify(refreshToken, { secret: process.env.JWT_REFRESH_SECRET as string }) as { IDcompany: number };
+
+    const newAcessToken = App.jwt.sign(
+      { IDcompany: decoded.IDcompany },
+      { expiresIn: "15m" }
+    )
+
+    return reply.cookie("token", newAcessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: '/',
+        maxAge: 60 * 15
+      }).send({ success: true })
+  } catch(error) {
+    return reply.status(401).send({ message: "refresh token inválido!" })
+  }
+});
 
 App.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
     try {

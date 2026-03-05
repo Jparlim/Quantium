@@ -1,6 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../Prisma_Client";
+import dotenv from "dotenv";
 import crypto from "crypto"
+import { success } from "zod";
+dotenv.config();
+
 
 export async function Token(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
     const { token, idPending } = request.body as { token:string, idPending:number }
@@ -60,17 +64,31 @@ export async function Token(request:FastifyRequest, reply:FastifyReply, App:Fast
         }
     })
 
-    const tokenJwt = App.jwt.sign({
-        IDcompany: IdCount.id
-    })
+    const tokenJwt = App.jwt.sign(
+        { IDcompany: IdCount.id },
+        { expiresIn: "15m" },
+    )
+
+    const refreshTokenJwt = App.jwt.sign(
+        { IDcompany: IdCount.id },
+        { expiresIn: "7d" }
+    )
 
     console.log(tokenJwt);
 
-    return reply.setCookie("token", tokenJwt, {
+    return reply
+    .setCookie("token", tokenJwt, {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
         path: '/',
         maxAge: 60 * 15
-    }).send({ success: true })
+    })
+    .setCookie("refreshToken", refreshTokenJwt, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7
+    }).send({ success:true})
 }

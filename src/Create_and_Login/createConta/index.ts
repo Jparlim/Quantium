@@ -1,7 +1,9 @@
 import crypto from "crypto"
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../../Prisma_Client";
 import dotenv from "dotenv"
+import bcrypt from "bcrypt"
+
 dotenv.config();
 
 export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
@@ -27,11 +29,13 @@ export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
         })
     }
 
+    const hashSenha = await bcrypt.hash(senha, 10)
+
     const Id_pending = await prisma.company_Pending.create({
         data: {
             nome: nome,
             email: email,
-            senha: senha,
+            senha: hashSenha,
             CNPJ: CNPJ,
             numero: numero,
             token: tokenSend,
