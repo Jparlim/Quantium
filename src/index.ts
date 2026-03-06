@@ -13,7 +13,7 @@ import { GetVisits } from "./Visits/getVisits";
 import { CreateVisits } from "./Visits/createVisits";
 import { Visits_Client_id } from "./Visits/visits_client_id";
 import cookie from "@fastify/cookie"
-import { UpdateConfigIA } from "./PromptIA/config/update";
+import { UpdateConfigIA } from "./PromptIA/IA/update";
 import { ref } from "process";
 import { success } from "zod";
 
@@ -27,7 +27,8 @@ App.register(jwt, {
 })
 
 App.register(jwt, {
-  secret: process.env.JWT_REFRESH_SECRET as string
+  secret: process.env.JWT_REFRESH_SECRET as string,
+  namespace: "refresh"
 })
 
 App.register(cookie, {
@@ -36,26 +37,32 @@ App.register(cookie, {
 
 App.post("/refresh", async (request: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { refreshToken } = request.cookies;
+    const { refreshToken } = request.cookies as { refreshToken: string };
 
-    const decoded = App.jwt.verify(refreshToken, { secret: process.env.JWT_REFRESH_SECRET as string }) as { IDcompany: number };
+    if (!refreshToken) {
+      return reply.status(401).send({ message: "Refresh token não enviado" });
+    }
 
-    const newAcessToken = App.jwt.sign(
+    const decoded = App.jwt.verify(refreshToken) as { IDcompany: number };
+
+    const newAccessToken = App.jwt.sign(
       { IDcompany: decoded.IDcompany },
       { expiresIn: "15m" }
     )
 
-    return reply.cookie("token", newAcessToken, {
+    return reply.cookie("token", newAccessToken, {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
         path: '/',
         maxAge: 60 * 15
       }).send({ success: true })
+
   } catch(error) {
     return reply.status(401).send({ message: "refresh token inválido!" })
   }
 });
+
 
 App.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
     try {

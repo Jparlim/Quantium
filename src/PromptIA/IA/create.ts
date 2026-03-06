@@ -2,6 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import Redis from "ioredis";
 import { prisma } from "../../Prisma_Client";
+import { CreateClient } from "../../Clients/createClient";
 dotenv.config();
 
 const redis = new Redis({
@@ -56,6 +57,12 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
         })
 
         console.log(JSON.parse(resposta.text as string)[0].dataClient);
+
+        const dataClient = JSON.parse(resposta.text as string)[0].dataClient
+
+        if(dataClient.nome) {
+            CreateClient(idEmpresa, dataClient.nome, clientNumber, true);
+        }
 
         await redis.rpush(clientNumber, JSON.stringify(resposta.text));
 

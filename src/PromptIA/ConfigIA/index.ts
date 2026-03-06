@@ -22,7 +22,7 @@ export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
             txt: Text
         }
 
-    // cria banco de dados somente para os textos prontos
+        // cria banco de dados somente para os textos prontos
     
         await prisma.iA.create({
             data: {
