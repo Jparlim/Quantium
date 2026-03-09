@@ -14,13 +14,11 @@ import { CreateVisits } from "./Visits/createVisits";
 import { Visits_Client_id } from "./Visits/visits_client_id";
 import cookie from "@fastify/cookie"
 import { UpdateConfigIA } from "./PromptIA/IA/update";
-import { ref } from "process";
-import { success } from "zod";
 
 
 const App = fastify({logger:true});
 App.register(import("@fastify/formbody"))
-App.register(cors, { origin: "*"})
+App.register(cors, { origin: "http://localhost:5173", credentials: true })
 
 App.register(jwt, {
   secret: process.env.JWT_SECRET as string
@@ -87,11 +85,11 @@ App.put('/config/update', UpdateConfigIA)
 
 // login and create count
 
-App.post('/create', CriaConta)
+App.post('/create', (request:FastifyRequest, reply: FastifyReply) => CriaConta(request, reply, App))
 
 App.post('/login', (request:FastifyRequest, reply: FastifyReply) => Login(request, reply, App))
 
-App.post('/create/token', (request: FastifyRequest, reply: FastifyReply) => Token(request, reply, App))
+App.post('/create/verify-token', (request: FastifyRequest, reply: FastifyReply) => Token(request, reply, App))
 
 // visits
 
@@ -109,9 +107,7 @@ App.post(`/visits/create`, CreateVisits)
 
 // ===================================================================================
 
-cron.schedule("*/15 * * * *", async () => {
-  await DelPending()
-})
+cron.schedule("*/15 * * * *", () => DelPending())
 
 const port = Number(process.env.PORT) || 3000;
 

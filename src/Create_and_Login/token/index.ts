@@ -2,47 +2,60 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../Prisma_Client";
 import dotenv from "dotenv";
 import crypto from "crypto"
-import { success } from "zod";
 dotenv.config();
 
 
 export async function Token(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
-    const { token, idPending } = request.body as { token:string, idPending:number }
+    const { token } = request.body as any
+    const tokenCookie = request.cookies.verifyToken as string
+    
+    console.log(tokenCookie)
+
+    if(!tokenCookie) return reply.status(401).send({ message: "token não encontrado!" })
+    
+    const decode = App.jwt.verify(tokenCookie) as { id: number, token: string }
 
     const verify = await prisma.company_Pending.findUnique({
         where: {
-            id: Number(idPending),
-            token: token
+            id: decode.id,
         }
     })
 
-    if(!verify) return `${reply.status(501).send("Ocorreu um erro! id da empresa não foi encontrado!")}`
+    if(!verify) return `${reply.status(401).send("Ocorreu um erro! empresa não foi encontrada!")}`
 
     if(token != verify?.token){
-        reply.send({
-            message: "token inválido! outro token será enviado para seu email!"
-        })
-
-
         const tokenSend = crypto.randomInt(100000, 1000000).toString()
 
         await prisma.company_Pending.update({
             where: {
-                id: idPending
+                id: decode.id
             },
             data: {
                 token: tokenSend
             }
         })
 
-        return reply.send(tokenSend)
-        // deixar mais minimalista o código, colocar direto no data o token, estou usando agora apenas por que ainda não configurei o envio de emails
+        return reply.send({ message: "token inválido, outro token será enviado para o email inserido!", token: tokenSend})
     }
 
     if(verify?.created_at! > verify?.token_expires!) {
-        return reply.send({
-            message: "token expirou! tente novamente"
+
+        const tokenSend = crypto.randomInt(100000, 1000000).toString()
+
+        await prisma.company_Pending.update({
+            where: {
+                id: decode.id
+            },
+            data: {
+                token: tokenSend
+            }
         })
+        
+        return reply.send({
+            message: "token expirou! outro token será enviado para seu email",
+            token: tokenSend
+        })
+        // enviar token para email
     }
     
     const IdCount = await prisma.company.create({
@@ -56,13 +69,12 @@ export async function Token(request:FastifyRequest, reply:FastifyReply, App:Fast
         }
     })
 
-    // salvar o id da conta da empresa no 
-
     await prisma.company_Pending.delete({
         where: {
             id: verify.id
         }
     })
+
 
     const tokenJwt = App.jwt.sign(
         { IDcompany: IdCount.id },
@@ -79,7 +91,7 @@ export async function Token(request:FastifyRequest, reply:FastifyReply, App:Fast
     return reply
     .setCookie("token", tokenJwt, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         path: '/',
         maxAge: 60 * 15

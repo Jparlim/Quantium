@@ -8,4 +8,6 @@ export async function DelPending() {
             }
         }
     })
+
+    console.log("dados foram apagados!!")
 }

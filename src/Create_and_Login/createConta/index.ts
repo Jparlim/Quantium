@@ -1,12 +1,13 @@
 import crypto from "crypto"
-import { FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../../Prisma_Client";
 import dotenv from "dotenv"
 import bcrypt from "bcrypt"
+import { success } from "zod";
 
 dotenv.config();
 
-export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
+export async function CriaConta(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
     const { nome, email, senha, CNPJ, numero } = request.body as { nome:string, email: string, senha: string, CNPJ: string, numero: string }
 
     // usar a AWS SES e configurar
@@ -47,8 +48,24 @@ export async function CriaConta(request:FastifyRequest, reply:FastifyReply) {
         }
     })
 
-    return reply.send({
+    const token = App.jwt.sign(
+    {
         id: Id_pending.id,
-        token: tokenSend
+        token: tokenSend,
+    }, 
+    {
+        expiresIn: "5m"
     })
+
+    console.log(tokenSend)
+
+    // mudar o secure, pois estou rodando local o servidor, e precisa rodar HTTPS
+
+    return reply.setCookie("tokenVerify", token, {
+        httpOnly: true,
+        secure: false, 
+        sameSite: "strict",
+        path: '/verify',
+        maxAge: 60 * 5
+    }).send({ success:true })
 }
