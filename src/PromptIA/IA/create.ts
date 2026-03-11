@@ -23,9 +23,9 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
         await redis.rpush(clientNumber, JSON.stringify(userMessage))
         await redis.expire(clientNumber, 3600 * 1)
 
-        const datas = await prisma.iA.findUnique({
+        const datas = await prisma.iA.findFirst({
             where: {
-                id: idEmpresa
+                companyId: idEmpresa
             }
         })
 
@@ -62,11 +62,12 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
 
         if(dataClient.nome) {
             CreateClient(idEmpresa, dataClient.nome, clientNumber, true);
+        } else {
+            await redis.rpush(clientNumber, JSON.stringify(resposta.text));
+    
+            return resposta;
         }
 
-        await redis.rpush(clientNumber, JSON.stringify(resposta.text));
-
-        return resposta;
     } catch(error) {
         console.log(error)
     }

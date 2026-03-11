@@ -53,7 +53,7 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
 
     const {empresaNumber, clientNumber, messgaeClient } = request.body as { empresaNumber: string, clientNumber: string, messgaeClient: string};
 
-    // formato do numero: 5543984623351, ou seja, código do país + DDD + número do cliente, sem espaços ou caracteres especiais
+    // formato do numero: 5543984623351, ou seja, é STRING, tem código do país + DDD + número do cliente, sem espaços ou caracteres especiais
 
     const formatedEmpresaNumber = empresaNumber.replace(/\D/g, '');
 

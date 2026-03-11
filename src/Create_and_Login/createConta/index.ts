@@ -64,8 +64,8 @@ export async function CriaConta(request:FastifyRequest, reply:FastifyReply, App:
     return reply.setCookie("tokenVerify", token, {
         httpOnly: true,
         secure: false, 
-        sameSite: "strict",
-        path: '/verify',
+        sameSite: "lax",
+        path: '/',
         maxAge: 60 * 5
     }).send({ success:true })
 }

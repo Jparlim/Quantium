@@ -1,10 +1,13 @@
-import { FastifyReply, FastifyRequest } from "fastify"
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { prisma } from "../../Prisma_Client";
 
-export async function ChosenClient(request:FastifyRequest, reply:FastifyReply) {
+export async function ChosenClient(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
     const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = 
     request.body as 
     { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }
+
+    // const token = request.cookies.token as string
+    // const decode = App.jwt.verify(token) as { IDcompany: number };
 
     try {
         await request.jwtVerify();

@@ -35,13 +35,13 @@ App.register(cookie, {
 
 App.post("/refresh", async (request: FastifyRequest, reply: FastifyReply) => {
   try {
-    const { refreshToken } = request.cookies as { refreshToken: string };
+    const { token } = request.cookies as { token: string };
 
-    if (!refreshToken) {
+    if (!token) {
       return reply.status(401).send({ message: "Refresh token não enviado" });
     }
 
-    const decoded = App.jwt.verify(refreshToken) as { IDcompany: number };
+    const decoded = App.jwt.verify(token) as { IDcompany: number };
 
     const newAccessToken = App.jwt.sign(
       { IDcompany: decoded.IDcompany },
@@ -76,10 +76,9 @@ App.decorate("authenticate", async function (request: FastifyRequest, reply: Fas
 // App.get('/whatsapp', {preHandler: [App.authenticate]}, whatsapp)
 
 
-
 App.post('/whatsapp', whatsapp)
 
-App.post('/config', ChosenClient)
+App.post('/config', (request:FastifyRequest, reply: FastifyReply) => ChosenClient(request, reply, App))
 
 App.put('/config/update', UpdateConfigIA)
 
@@ -89,7 +88,7 @@ App.post('/create', (request:FastifyRequest, reply: FastifyReply) => CriaConta(r
 
 App.post('/login', (request:FastifyRequest, reply: FastifyReply) => Login(request, reply, App))
 
-App.post('/create/verify-token', (request: FastifyRequest, reply: FastifyReply) => Token(request, reply, App))
+App.post('/verify-token', (request: FastifyRequest, reply: FastifyReply) => Token(request, reply, App))
 
 // visits
 

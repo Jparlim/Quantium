@@ -7,7 +7,7 @@ dotenv.config();
 
 export async function Token(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
     const { token } = request.body as any
-    const tokenCookie = request.cookies.verifyToken as string
+    const tokenCookie = request.cookies.tokenVerify as string
     
     console.log(tokenCookie)
 
@@ -91,7 +91,7 @@ export async function Token(request:FastifyRequest, reply:FastifyReply, App:Fast
     return reply
     .setCookie("token", tokenJwt, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         sameSite: "strict",
         path: '/',
         maxAge: 60 * 15
