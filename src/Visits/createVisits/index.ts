@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../Prisma_Client";
+import { connect } from "http2";
 
 export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
-    const { nome,
+    const { Nome,
         numero,
         endereco, 
         observacao, 
@@ -10,9 +11,8 @@ export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
         data, 
         hora, 
         status,
-        clientId,
     } = request.body as { 
-        nome: string,
+        Nome: string,
         numero: string,
         endereco: string, 
         observacao: string, 
@@ -23,19 +23,30 @@ export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
         clientId: number
     }
 
+    const numberFormated = numero.replace(/\D/g, '');
+
+    const verifyClient = await prisma.cliente.findUnique({
+        where: {
+            nome: Nome,
+            contato: numberFormated
+        }
+    })
+
+    
+
     // problema: pegar o id do cliente para colocar no visits
 
     await prisma.visits.create({
         data: {
-            nome: nome,
-            contato: numero,
+            client: { connect: {id: verifyClient?.id! }},
+            nome: Nome,
+            contato: numberFormated,
             endereco: endereco, 
             observacao: observacao,
             responsavel: responsavel,
             data: data,
             hora: hora,
             status: status,
-            clientId: clientId
         }
     })
 }

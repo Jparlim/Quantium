@@ -80,7 +80,10 @@ App.post('/whatsapp', whatsapp)
 
 App.post('/config', (request:FastifyRequest, reply: FastifyReply) => ChosenClient(request, reply, App))
 
-App.put('/config/update', UpdateConfigIA)
+App.put('/config-update', (request:FastifyRequest, reply: FastifyReply) => UpdateConfigIA(request, reply, App))
+
+App.delete('/config-delete', (request:FastifyRequest, reply: FastifyReply) => UpdateConfigIA(request, reply, App))
+
 
 // login and create count
 

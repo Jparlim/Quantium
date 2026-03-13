@@ -3,7 +3,6 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import {prisma} from "../../Prisma_Client";
 import dotenv from "dotenv"
 import bcrypt from "bcrypt"
-import { success } from "zod";
 
 dotenv.config();
 

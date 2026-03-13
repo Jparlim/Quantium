@@ -60,14 +60,24 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
 
         const dataClient = JSON.parse(resposta.text as string)[0].dataClient
 
-        if(dataClient.nome) {
-            CreateClient(idEmpresa, dataClient.nome, clientNumber, true);
-        } else {
-            await redis.rpush(clientNumber, JSON.stringify(resposta.text));
-    
-            return resposta;
+        const verify = await prisma.cliente.findFirst({
+            where: {
+                OR: [
+                    {nome: dataClient.nomeClient},
+                    {contato: clientNumber}
+                ]
+            }
+        })
+
+        if(!verify) {
+            if(dataClient.nomeClient) {
+                CreateClient(idEmpresa, dataClient.nome, clientNumber, true);
+            }
         }
 
+        await redis.rpush(clientNumber, JSON.stringify(resposta.text));
+    
+        return resposta;
     } catch(error) {
         console.log(error)
     }
