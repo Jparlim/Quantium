@@ -56,22 +56,19 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
             },
         })
 
-        console.log(JSON.parse(resposta.text as string)[0].dataClient);
-
-        const dataClient = JSON.parse(resposta.text as string)[0].dataClient
-
         const verify = await prisma.cliente.findFirst({
             where: {
-                OR: [
-                    {nome: dataClient.nomeClient},
-                    {contato: clientNumber}
-                ]
+                contato: clientNumber
             }
         })
 
-        if(!verify) {
-            if(dataClient.nomeClient) {
-                CreateClient(idEmpresa, dataClient.nome, clientNumber, true);
+        console.log(JSON.parse(resposta.text![0]))
+        
+        const dataClient = JSON.parse(resposta.text as string)[0].dataClient
+
+        if(dataClient){
+            if(!verify) {
+                CreateClient(idEmpresa, dataClient, clientNumber);
             }
         }
 

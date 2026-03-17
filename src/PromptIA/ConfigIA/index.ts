@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { prisma } from "../../Prisma_Client";
 
 export async function ChosenClient(request:FastifyRequest, reply:FastifyReply, App:FastifyInstance) {
-    const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle, Text} = 
+    const {Empresa, NameIA, Instruction, DataName, DataType, TextTitle=null, Text=null} = 
     request.body as 
     { Empresa:string, NameIA:string, Instruction:string, DataName:string, DataType: string | number, TextTitle:string, Text:string }
 
@@ -16,17 +16,19 @@ export async function ChosenClient(request:FastifyRequest, reply:FastifyReply, A
         // aqui pego o id da empresa que esta no navegador, await request.jwtVerify() decodifica o token quando o usuario entra nesta página, e fornece o valor dentro do token;
 
         const data = {
-            ["nomeClient"]: {type: "STRING"},
+            ["nome"]: {type: "STRING"},
             [DataName]: {type: [DataType]}
         }
 
-        const text = {
-            title: TextTitle,
-            txt: Text
+        if(TextTitle || Text !== null) {
+            const text = {
+                title: TextTitle,
+                txt: Text
+            }
+
+            // cria banco de dados somente para os textos prontos
         }
 
-        // cria banco de dados somente para os textos prontos
-    
         await prisma.iA.create({
             data: {
                 company: {

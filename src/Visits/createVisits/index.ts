@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../Prisma_Client";
-import { connect } from "http2";
 
 export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
     const { Nome,
@@ -31,10 +30,6 @@ export async function CreateVisits(request:FastifyRequest, reply:FastifyReply) {
             contato: numberFormated
         }
     })
-
-    
-
-    // problema: pegar o id do cliente para colocar no visits
 
     await prisma.visits.create({
         data: {
