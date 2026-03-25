@@ -61,8 +61,6 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
                 contato: clientNumber
             }
         })
-
-        console.log(JSON.parse(resposta.text![0]))
         
         const dataClient = JSON.parse(resposta.text as string)[0].dataClient
 
