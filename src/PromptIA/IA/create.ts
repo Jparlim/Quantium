@@ -55,7 +55,11 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
                 contato: clientNumber
             }
         })
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> eb6fdd44d7abfd164ae6eb132f852688f128b245
         const dataClient = JSON.parse(resposta.text as string)[0].dataClient
 
         if(dataClient){

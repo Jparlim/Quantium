@@ -69,22 +69,5 @@ export async function whatsapp(request:FastifyRequest, reply: FastifyReply) {
 
     const resposta = await System(Idcompany?.id!, clientNumber, messgaeClient)
 
-    const exists = await prisma.cliente.findUnique({
-        where: {
-            contato: clientNumber
-        }
-    })
-
-    if(!exists && resposta?.data) {
-        await prisma.cliente.create({
-            data: {
-                contato: clientNumber,
-                company: {
-                    connect: { id: Idcompany?.id}
-                }    
-            }
-        })
-    }
-
     reply.send(JSON.parse(resposta?.text as string)[0].resposta)
 }
