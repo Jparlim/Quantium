@@ -1,15 +1,9 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
-import Redis from "ioredis";
-import { prisma } from "../../Prisma_Client";
-import { CreateClient } from "../../Clients/createClient";
+import { prisma } from "../../Prisma_Client/index.js";
+import { CreateClient } from "../../Clients/createClient/index.js";
+import { client as redis } from "../../../Redis/controller.js";
 dotenv.config();
-
-const redis = new Redis({
-    host: process.env.REDIS_HOST,
-    port: Number(process.env.REDIS_PORT),
-    password: process.env.REDIS_PASSWORD
-})
 
 const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
 
@@ -20,7 +14,7 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
     }
 
     try {
-        await redis.rpush(clientNumber, JSON.stringify(userMessage))
+        await redis.rPush(clientNumber, JSON.stringify(userMessage))
         await redis.expire(clientNumber, 3600 * 1)
 
         const datas = await prisma.iA.findFirst({
@@ -35,7 +29,7 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
     
         const resposta = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: await redis.lrange(clientNumber, 0,-1),
+            contents: await redis.lRange(clientNumber, 0,-1) as string[],
             config: {
             responseMimeType: "application/json",
             systemInstruction: `você é uma atendente da empresa ${datas?.nomeEmpresa} e seu nome é ${datas?.nomeIA}, ${datas?.instructions}. ${datas?.data} você precisa extrair estes dados do cliente, e retornar em formato JSON, seguindo a estrutura definida no schema. caso o cliente não forneça os dados necessários, retorne apenas a resposta para o cliente, sem o campo dataClient.`,
@@ -62,8 +56,6 @@ export async function System(idEmpresa:number, clientNumber:string, messageClien
             }
         })
 
-        console.log(JSON.parse(resposta.text![0]))
-        
         const dataClient = JSON.parse(resposta.text as string)[0].dataClient
 
         if(dataClient){

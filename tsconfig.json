@@ -1,14 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2020",                 // Versão moderna do JS
-    "module": "esnext",                 // Usa require() no JS final
-    "moduleResolution": "node",        // Resolve pacotes do node
-    "outDir": "dist",                  // Compila os arquivos para dist/
-    "rootDir": "src",                  // Seu código-fonte fica em src/
-    "esModuleInterop": true,           // Permite importar libs sem dor de cabeça
-    "strict": true,                    // Ativa checagens estritas
-    "skipLibCheck": true               // Evita erros chatos de tipagem em libs
-  },
-  "include": ["src"],                  // Pasta do código-fonte
-  "exclude": ["node_modules", "dist"]  // Ignora essas pastas
+    "target": "es2022",
+    "module": "node20",
+    "moduleResolution": "node16",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
 }

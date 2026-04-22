@@ -12,5 +12,5 @@ export async function CreateClient( companyId:number, dados:object, Contato:stri
         }
     })
 
-    return console.log(companyId, dados, Contato, status, {message: "cliente criado com sucesso!"})
+    return console.log(companyId, dados, Contato, {message: "cliente criado com sucesso!"});
 }

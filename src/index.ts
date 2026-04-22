@@ -1,19 +1,19 @@
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import cors from "@fastify/cors"
-import { whatsapp } from "./Whatsapp";
-import { ChosenClient } from "./PromptIA/ConfigIA";
-import { CriaConta } from "./Create_and_Login/createConta";
-import { Login } from "./Create_and_Login/loginConta";
+import { whatsapp } from "./Whatsapp/index.js";
+import { ChosenClient } from "./PromptIA/ConfigIA/index.js";
+import { CriaConta } from "./Create_and_Login/createConta/index.js";
+import { Login } from "./Create_and_Login/loginConta/index.js";
 import jwt from "@fastify/jwt";
-import { Token } from "./Create_and_Login/token";
-import { DeleteVisits } from "./Visits/deletVisits";
+import { Token } from "./Create_and_Login/token/index.js";
+import { DeleteVisits } from "./Visits/deletVisits/index.js";
 import cron from "node-cron"
-import { DelPending } from "./Prisma_Client/del_pending_users";
-import { GetVisits } from "./Visits/getVisits";
-import { CreateVisits } from "./Visits/createVisits";
-import { Visits_Client_id } from "./Visits/visits_client_id";
+import { DelPending } from "./Prisma_Client/del_pending_users.js";
+import { GetVisits } from "./Visits/getVisits/index.js";
+import { CreateVisits } from "./Visits/createVisits/index.js";
+import { Visits_Client_id } from "./Visits/visits_client_id/index.js";
 import cookie from "@fastify/cookie"
-import { UpdateConfigIA } from "./PromptIA/IA/update";
+import { UpdateConfigIA } from "./PromptIA/IA/update.js";
 
 
 const App = fastify({logger:true});
@@ -104,6 +104,8 @@ App.get("/visits/get_client_id", Visits_Client_id)
 App.post(`/visits/create`, CreateVisits)
 
 // clients
+
+
 
 // App.post(`/client/create`, )
 
