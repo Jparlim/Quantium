@@ -27,7 +27,7 @@ model Company_Pending {
   CNPJ          String   @unique
   numero        String   @unique
   token         String
-  token_expires DateTime
+  token_expires DateTime @default(now())
   created_at    DateTime @default(now())
 }
 

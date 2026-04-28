@@ -1,6 +1,6 @@
 import crypto from "crypto"
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import {prisma} from "../../Prisma_Client";
+import {prisma} from "../../Prisma_Client/prismaClient";
 import dotenv from "dotenv"
 import bcrypt from "bcrypt"
 
