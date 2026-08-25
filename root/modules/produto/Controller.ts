@@ -65,15 +65,6 @@ export const ControllerProduto = {
     if (!token)
       return reply.status(401).send({ message: "token não enviado!" });
 
-    const decode = request.server.jwt.decode(token) as {
-      IDcompany: number;
-      role: string;
-      estoqueId: number;
-    };
-
-    if (decode.role !== "admin")
-      return reply.status(401).send({ message: "acesso negado!" });
-
     return await ServicesProduto.DeleteServices(id);
   },
 
@@ -94,6 +85,20 @@ export const ControllerProduto = {
 
   async FindByIdController(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: number };
+    const token = request.cookies.refreshToken as string;
+
+    // deixar esta função em observação, pois no futuro ou no momento podemos acrescentar um filtro para encontrar produto, e talvez usar esta função
+
+    if (!token)
+      return reply.status(401).send({ message: "token não encontrado! " });
+
+    const decode = request.server.jwt.verify(token) as {
+      IDcompany: number;
+      role: string;
+    };
+
+    if (decode.role !== "admin")
+      return reply.status(403).send({ message: "Acesso negado!" });
     if (!id)
       return reply
         .status(400)

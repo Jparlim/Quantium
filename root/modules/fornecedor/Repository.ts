@@ -18,10 +18,13 @@ export class Repository {
       data,
     });
   }
-  async Delete(id: number) {
-    return await Prisma.fornecedor.delete({
+  async Delete(companyId: number, fornecedorId: number) {
+    return await Prisma.gerenciamentoFornecedor.delete({
       where: {
-        id: Number(id),
+        companyId_fornecedorId: {
+          companyId: companyId,
+          fornecedorId: fornecedorId,
+        },
       },
     });
   }

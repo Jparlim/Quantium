@@ -29,7 +29,9 @@ export const ServicesFornecedor = {
     return await repository.Update(filteredData, id);
   },
 
-  async DeleteServices() {},
+  async DeleteServices(companyId: number, fornecedorId: number) {
+    return await repository.Delete(companyId, fornecedorId);
+  },
 
   async FindAllServices() {
     return await repository.FindAll();

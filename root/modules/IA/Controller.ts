@@ -15,9 +15,6 @@ export const ControllerIA = {
       role: string;
     };
 
-    if (decode.role !== "admin")
-      return reply.status(403).send({ message: "Acesso negado!" });
-
     return await ServicesIA.CreateServices(data, decode.IDcompany);
   },
 
@@ -33,9 +30,6 @@ export const ControllerIA = {
       role: string;
     };
 
-    if (decode.role !== "admin")
-      return reply.status(403).send({ message: "Acesso negado!" });
-
     return await ServicesIA.DeleteServices(id);
   },
 
@@ -49,6 +43,9 @@ export const ControllerIA = {
       IDcompany: number;
       role: string;
     };
+
+    if (decode.role !== "admin")
+      return reply.status(403).send({ message: "Acesso negado!" });
 
     return await ServicesIA.FindByCompanyServices(decode.IDcompany);
   },
@@ -64,9 +61,6 @@ export const ControllerIA = {
       IDcompany: number;
       role: string;
     };
-
-    if (decode.role !== "admin")
-      return reply.status(403).send({ message: "Acesso negado!" });
 
     return await ServicesIA.UpdateServices(decode.IDcompany, data);
   },

@@ -1,3 +1,4 @@
+import { ExecutionStepPage } from "twilio/lib/rest/studio/v1/flow/execution/executionStep.js";
 import { Prisma } from "../../infra/database/client.js";
 import {
   CreateToRepositoryType,
@@ -27,6 +28,14 @@ export class Repository {
   }
   async FindAll() {
     return await Prisma.produto.findMany();
+  }
+
+  async FindAllByEstoque(estoqueId: number) {
+    return await Prisma.produto.findMany({
+      where: {
+        estoqueId: estoqueId,
+      },
+    });
   }
   async FindById(id: number) {
     return await Prisma.produto.findUnique({

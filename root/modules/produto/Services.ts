@@ -62,7 +62,7 @@ export const ServicesProduto = {
   },
 
   async FindAllServices(estoqueId: number) {
-    return await repository.FindAll(estoqueId);
+    return await repository.FindAllByEstoque(estoqueId);
   },
 
   async FindByIdServices(id: number) {

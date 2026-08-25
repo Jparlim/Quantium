@@ -26,6 +26,7 @@ model Company {
   cliente     Cliente[]
   IA          IA?
   estoque     Estoque?
+  fornecedor GerenciamentoFornecedor[]
   movimentacoes MovimentacaoFinanceira[]
 }
 
@@ -139,4 +140,16 @@ model Fornecedor {
   CNPJ String @unique
 
   produto Produto[]
+  gerenciamento GerenciamentoFornecedor[]
+}
+
+model GerenciamentoFornecedor {
+  id Int @id @default(autoincrement())
+  companyId Int
+  fornecedorId Int
+
+  fornecedor Fornecedor @relation(fields: [fornecedorId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@unique([companyId, fornecedorId])
 }

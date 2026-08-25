@@ -41,22 +41,71 @@ export const User_Controller = {
   async UpdateUser(request: FastifyRequest, reply: FastifyReply) {
     const data = UpdateAcount.parse(request.body);
     const { id } = request.params as { id: number };
+    const token = request.cookies.refreshToken as string;
+
+    if (!token)
+      return reply.status(401).send({ message: "token não encontrado! " });
+
+    const decode = request.server.jwt.verify(token) as {
+      IDcompany: number;
+      role: string;
+    };
+
+    if (decode.role !== "admin")
+      return reply.status(403).send({ message: "Acesso negado!" });
 
     return await ServicesAcount.UpdateAcount(id, data);
   },
 
   async DeleteUser(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: number };
+    const token = request.cookies.refreshToken as string;
+
+    if (!token)
+      return reply.status(401).send({ message: "token não encontrado! " });
+
+    const decode = request.server.jwt.verify(token) as {
+      IDcompany: number;
+      role: string;
+    };
+
+    if (decode.role !== "admin")
+      return reply.status(403).send({ message: "Acesso negado!" });
 
     return await ServicesAcount.DeleteAcount(id);
   },
 
   async FindAllUsers(request: FastifyRequest, reply: FastifyReply) {
+    const token = request.cookies.refreshToken as string;
+
+    if (!token)
+      return reply.status(401).send({ message: "token não encontrado! " });
+
+    const decode = request.server.jwt.verify(token) as {
+      IDcompany: number;
+      role: string;
+    };
+
+    if (decode.role !== "admin")
+      return reply.status(403).send({ message: "Acesso negado!" });
+
     return await ServicesAcount.FindAllAcount();
   },
 
   async FindByIdUser(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: number };
+    const token = request.cookies.refreshToken as string;
+
+    if (!token)
+      return reply.status(401).send({ message: "token não encontrado! " });
+
+    const decode = request.server.jwt.verify(token) as {
+      IDcompany: number;
+      role: string;
+    };
+
+    if (decode.role !== "admin")
+      return reply.status(403).send({ message: "Acesso negado!" });
 
     return await ServicesAcount.FindByIdAcount(id);
   },

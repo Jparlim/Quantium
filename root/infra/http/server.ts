@@ -1,7 +1,7 @@
 import "dotenv/config";
 import fastify from "fastify";
 import formbody from "@fastify/formbody";
-import { Route } from "./routes.js";
+import { Route } from "./routes/routes.js";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";

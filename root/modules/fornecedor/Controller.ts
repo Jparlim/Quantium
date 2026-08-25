@@ -16,8 +16,7 @@ export const ControllerFornecedor = {
       estoqueId: number;
     };
 
-    if (decode.role !== "admin")
-      return reply.status(401).send({ message: "acesso negado!" });
+    // user and adm can to make fornecedor
 
     return await ServicesFornecedor.CreateServices(data);
   },
@@ -30,19 +29,24 @@ export const ControllerFornecedor = {
     if (!token)
       return reply.status(401).send({ message: "token não enviado!" });
 
+    return await ServicesFornecedor.UpdateServices(data, id);
+  },
+
+  async DeleteController(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: number };
+    const token = request.cookies.refreshToken as string;
+
+    if (!token)
+      return reply.status(401).send({ message: "token não informado!" });
+
     const decode = request.server.jwt.decode(token) as {
       IDcompany: number;
       role: string;
       estoqueId: number;
     };
 
-    if (decode.role !== "admin")
-      return reply.status(401).send({ message: "acesso negado!" });
-
-    return await ServicesFornecedor.UpdateServices(data, id);
+    return await ServicesFornecedor.DeleteServices(decode.IDcompany, id);
   },
-
-  async DeleteController(request: FastifyRequest, reply: FastifyReply) {},
 
   async FindAllController(request: FastifyRequest, reply: FastifyReply) {
     return await ServicesFornecedor.FindAllServices();

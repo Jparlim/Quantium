@@ -15,8 +15,7 @@ export const Controller = {
       role: string;
     };
 
-    if (decode.role !== "admin")
-      return reply.status(403).send({ message: "Acesso negado!" });
+    // tanto adm quanto user podem criar visitas
 
     return await ServicesVisits.CreateServices(data, decode.IDcompany);
   },
@@ -35,8 +34,7 @@ export const Controller = {
       role: string;
     };
 
-    if (decode.role !== "admin")
-      return reply.status(403).send({ message: "Acesso negado!" });
+    // tanto adm quanto user podem criar visitas
 
     return ServicesVisits.DeleteServices(id, decode.IDcompany);
   },
@@ -68,7 +66,12 @@ export const Controller = {
 
   async FindByIdController(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as { id: number };
-    if (!id) return reply.status(401).send("id não providenciado!");
+    const token = request.cookies.refreshToken as string;
+
+    if (!token)
+      return reply.status(401).send({ message: "token não encontrado! " });
+
+    if (!id) return reply.status(401).send("id não encontrado.");
 
     return await ServicesVisits.FindByIdServices(id);
   },
