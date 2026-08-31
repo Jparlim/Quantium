@@ -6,15 +6,25 @@ const repository = new RepositoryLogin();
 
 export const ServiceLogin = {
   async validateUser(email: string, senha: string) {
-    const verify = await repository.findByEmail(email);
+    const verify = await repository.findUserByEmail(email);
 
     if (!verify) {
       throw new AppError(401, "Email ou senha inválidos!");
     }
 
-    const passwordHash = await bcrypt.compare(senha, verify.senha!);
+    const passwordHash = await bcrypt.compare(senha, verify!.senha!);
 
     if (!passwordHash) {
+      throw new AppError(401, "Email ou senha inválidos!");
+    }
+
+    return verify!.id;
+  },
+
+  async validateAdmin(email: string, senha: string) {
+    const verify = await repository.findAdminByEmail(email);
+
+    if (senha !== verify?.senha) {
       throw new AppError(401, "Email ou senha inválidos!");
     }
 

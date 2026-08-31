@@ -38,4 +38,31 @@ export const ControllerLogin = {
       .setCookie("refreshToken", refreshToken, refreshCookie)
       .send({ success: true, token, refreshToken });
   },
+
+  async validateAdmin(request: FastifyRequest, reply: FastifyReply) {
+    const { email, senha } = request.body as { email: string; senha: string };
+
+    const userId = await ServiceLogin.validateAdmin(email, senha);
+
+    const token = request.server.jwt.sign(
+      {
+        IDcompany: userId,
+        role: "admin",
+      },
+      { expiresIn: "30m" },
+    );
+
+    const refreshToken = request.server.jwt.sign(
+      {
+        IDcompany: userId,
+        role: "admin",
+      },
+      { expiresIn: "7d" },
+    );
+
+    return reply
+      .setCookie("token", token, accessCookie)
+      .setCookie("refreshToken", refreshToken, refreshCookie)
+      .send({ success: true, token, refreshToken });
+  },
 };
