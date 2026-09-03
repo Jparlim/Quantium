@@ -8,16 +8,24 @@ export const User_Pending_Controller = {
   async CreateUserPending(request: FastifyRequest, reply: FastifyReply) {
     const data = CreateAcountWithDataOnBody.parse(request.body);
 
-    const result = await ServicesAcount.CreateAcountPending(
-      data,
-      request.server,
-    );
+    const result = await ServicesAcount.CreateAcountPending(data);
+
+    await ServicesAcount.CreateAcountPending(data);
 
     request.log.info({ codigo: result.codigo }, "código de verificação gerado");
 
+    const tokenJWT = request.server.jwt.sign(
+      {
+        id: result.user.id,
+      },
+      {
+        expiresIn: "15m",
+      },
+    );
+
     return reply
       .status(200)
-      .setCookie("tokenVerify", result.token, verifyCookie)
+      .setCookie("tokenVerify", tokenJWT, verifyCookie)
       .send({
         success: true,
         email: result.user.email,

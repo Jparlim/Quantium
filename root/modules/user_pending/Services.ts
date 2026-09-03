@@ -9,10 +9,7 @@ import { AppError } from "../../infra/error/AppError.js";
 const repository = new RepositoryCount();
 
 export const ServicesAcount = {
-  async CreateAcountPending(
-    data: CreateAcountPendingOfBodyType,
-    token: FastifyInstance,
-  ) {
+  async CreateAcountPending(data: CreateAcountPendingOfBodyType) {
     const verify = await repository.findFirst(data);
 
     const verify_pending = await repository.findFirstCompanyExists(data);
@@ -21,29 +18,47 @@ export const ServicesAcount = {
       throw new AppError(409, "Empresa já cadastrada!");
     }
 
-    const tokenSend = crypto.randomInt(100000, 1000000).toString();
+    try {
+      const formatedCNPJ = data.CNPJ.replace(/\D/g, "");
+
+      // console.log("CNPJ formatado:", formatedCNPJ);
+
+      const ResponseOfAPI = await fetch(
+        `https://receitaws.com.br/v1/cnpj/${formatedCNPJ}`,
+        {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+          },
+        },
+      );
+
+      console.log(ResponseOfAPI);
+
+      if (ResponseOfAPI.status === 400) {
+        throw new AppError(401, "CNPJ inválido!");
+      }
+    } catch (error) {
+      throw new AppError(
+        401,
+        "não foi possível validar o CNPJ, tente novamente mais tarde!",
+      );
+    }
+
+    const tokenSended = crypto.randomInt(100000, 1000000).toString();
     const hashSenha = await bcrypt.hash(data.senha, 10);
 
     const newData = {
       ...data,
       telefone: data.telefone.replace(/\D/g, ""),
       senha: hashSenha,
-      token: tokenSend,
+      token: tokenSended,
       token_expires: new Date(Date.now() + 15 * 60 * 1000),
     };
 
-    const IdPending = await repository.createPending(newData);
+    const IdUserPending = await repository.createPending(newData);
 
-    const tokenJWT = token.jwt.sign(
-      {
-        id: IdPending.id,
-      },
-      {
-        expiresIn: "15m",
-      },
-    );
-
-    return { token: tokenJWT, user: IdPending, codigo: tokenSend };
+    return { user: IdUserPending, codigo: tokenSended };
   },
 
   async ResendToken(pendingId: number, token: FastifyInstance) {
@@ -61,10 +76,7 @@ export const ServicesAcount = {
       },
     });
 
-    const tokenJWT = token.jwt.sign(
-      { id: pendingId },
-      { expiresIn: "15m" },
-    );
+    const tokenJWT = token.jwt.sign({ id: pendingId }, { expiresIn: "15m" });
 
     return { token: tokenJWT, user: pending, codigo: tokenSend };
   },
